@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int     @id @default(autoincrement())
+  email    String  @unique
+  name     String
+  password String
+  notes    Note[]
+}
+
+model Note {
+  id          Int       @id @default(autoincrement())
+  title       String
+  content     String
+  color       String?
+  createdAt   DateTime  @default(now())
+  completedAt DateTime?
+  isDeleted   Boolean   @default(false)
+  userId      Int
+  images      Image[]
+  user        User      @relation(fields: [userId], references: [id])
+  tags        NoteTag[]
+}
+
+model Tag {
+  id    Int       @id @default(autoincrement())
+  name  String
+  notes NoteTag[]
+}
+
+model Image {
+  id        Int      @id @default(autoincrement())
+  url       String
+  noteId    Int
+  createdAt DateTime @default(now())
+  note      Note     @relation(fields: [noteId], references: [id])
+}
+
+model NoteTag {
+  noteId Int
+  tagId  Int
+  tag    Tag  @relation(fields: [tagId], references: [id])
+  note   Note @relation(fields: [noteId], references: [id])
+
+  @@id([noteId, tagId])
+}
