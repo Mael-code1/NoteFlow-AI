@@ -1,17 +1,9 @@
 
-export default function home({
-  children,
-  params,}:{
-    children: React.ReactNode,
-    params: {
-      tag: string,
-      item: string
-    }
-    }
-  ) {
-  return (
-    <div className="">
-      {children}
-    </div>
-  )
+export default function HomePage() {
+    return (
+        <div>
+            <p>Bienvenido a la página Home</p>
+        </div>
+    );
 }
+
