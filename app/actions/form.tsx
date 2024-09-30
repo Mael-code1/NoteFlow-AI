@@ -21,7 +21,5 @@ export async function createUser(data: {
   } catch (error) {
     console.error("Error al crear usuario:", error);
     throw new Error("Error al crear usuario");
-  } finally {
-    redirect("http://localhost:3000/home");
   }
 }

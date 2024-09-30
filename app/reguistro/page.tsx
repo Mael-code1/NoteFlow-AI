@@ -4,6 +4,8 @@ import React, { useState, FormEvent } from "react";
 import { Input } from "../components/input";
 import { createUser } from "../actions/form"; // Importa la Server Action
 import { Button } from "../components/button";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const FormComponent = () => {
   const [name, setName] = useState("");
@@ -12,68 +14,73 @@ const FormComponent = () => {
   const [password2, setPasword2] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const router = useRouter();
 
   const handleSubmit = async (e: FormESvent) => {
     e.preventDefault();
     setErrorMessage(null);
     setSuccessMessage(null);
-
     if (password == password2) {
+      1;
       setSuccessMessage("constraseña correcta");
     } else {
       return;
     }
-
     try {
       const user = await createUser({ name, email, password });
       setSuccessMessage("Usuario creado con éxito");
+      setTimeout(() => router.push("/dasbord/"), 3_000);
       console.log("Usuario creado:", user);
     } catch (error) {
       setErrorMessage("Error al crear usuario");
       console.error(error);
     }
   };
-
   return (
     <form
       onSubmit={handleSubmit}
-      className='flex flex-col justify-center items-center bg-slate-100 p-9 rounded-2xl border-solid gap-9'
+      className="flex flex-col justify-center items-center bg-slate-100 p-9 rounded-2xl border-solid gap-9"
     >
-      {errorMessage && <p className='text-red-500'>{errorMessage}</p>}
-      {successMessage && <p className='text-green-500'>{successMessage}</p>}
-      <h1 className='text-start text-5xl text-cyan-500'>login</h1>
+      {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+      {successMessage && <p className="text-green-500">{successMessage}</p>}
+      <h1 className="text-start text-5xl text-cyan-500">login</h1>
       <Input
-        label='Nombre'
+        label="Nombre"
         value={name}
-        type='text'
+        type="text"
         onChange={e => setName(e.target.value)}
-        placeholder='Ingresa tu nombre'
+        placeholder="Ingresa tu nombre"
         required
       />
       <Input
-        label='Correo electrónico'
-        type='email'
+        label="Correo electrónico"
+        type="email"
         value={email}
         onChange={e => setEmail(e.target.value)}
-        placeholder='Ingresa tu correo'
+        placeholder="Ingresa tu correo"
         required
       />
       <Input
-        label='Contraseña'
-        type='password'
+        label="Contraseña"
+        type="password"
         value={password}
         onChange={e => setPassword(e.target.value)}
-        placeholder='Ingresa tu contraseña'
+        placeholder="Ingresa tu contraseña"
         required
       />
       <Input
-        label='contraseña'
-        type='password'
+        label="contraseña"
+        type="password"
         value={password2}
         onChange={e => setPasword2(e.target.value)}
       />
-      <Button type='submit'>enviar</Button>
-      {/* <button type='submit'>Enviar</button> */}
+      <Button type="submit">enviar</Button>
+      <Link
+        href={"./login"}
+        className="text-black border-b-8 border-slate-700 border-solid b"
+      >
+        login
+      </Link>
     </form>
   );
 };
