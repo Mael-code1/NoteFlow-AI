@@ -3,9 +3,9 @@
 import React, { useState, FormEvent } from "react";
 import { Input } from "../components/input";
 import { createUser } from "../actions/form"; // Importa la Server Action
-import { Button } from "../components/button";
-import Link from "next/link";
+import ButtonComponent from "../components/button";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const FormComponent = () => {
   const [name, setName] = useState("");
@@ -74,7 +74,7 @@ const FormComponent = () => {
         value={password2}
         onChange={e => setPasword2(e.target.value)}
       />
-      <Button type="submit">enviar</Button>
+      <ButtonComponent type="submit">enviar</ButtonComponent>
       <Link
         href={"./login"}
         className="text-black border-b-8 border-slate-700 border-solid b"

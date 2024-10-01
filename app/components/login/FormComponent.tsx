@@ -2,9 +2,9 @@
 
 import React, { useState, FormEvent } from "react";
 import { Input } from "../input";
-import { createUser } from "./form"; // Importa la Server Action
+import { createUser } from "../../actions/form"; // Importa la Server Action
 
-const FormComponent = () => {
+const FormLogin = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -29,37 +29,37 @@ const FormComponent = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className='flex flex-col justify-center items-center bg-slate-100 p-9 rounded-2xl border-solid gap-9'
+      className="flex flex-col justify-center items-center bg-slate-100 p-9 rounded-2xl border-solid gap-9"
     >
-      {errorMessage && <p className='text-red-500'>{errorMessage}</p>}
-      {successMessage && <p className='text-green-500'>{successMessage}</p>}
+      {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+      {successMessage && <p className="text-green-500">{successMessage}</p>}
       <Input
-        label='Nombre'
+        label="Nombre"
         value={name}
-        type='text'
+        type="text"
         onChange={e => setName(e.target.value)}
-        placeholder='Ingresa tu nombre'
+        placeholder="Ingresa tu nombre"
         required
       />
       <Input
-        label='Correo electrónico'
-        type='email'
+        label="Correo electrónico"
+        type="email"
         value={email}
         onChange={e => setEmail(e.target.value)}
-        placeholder='Ingresa tu correo'
+        placeholder="Ingresa tu correo"
         required
       />
       <Input
-        label='Contraseña'
-        type='password'
+        label="Contraseña"
+        type="password"
         value={password}
         onChange={e => setPassword(e.target.value)}
-        placeholder='Ingresa tu contraseña'
+        placeholder="Ingresa tu contraseña"
         required
       />
-      <button type='submit'>Enviar</button>
+      <button type="submit">Enviar</button>
     </form>
   );
 };
 
-export default FormComponent;
+export default FormLogin;

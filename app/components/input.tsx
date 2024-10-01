@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 interface InputProps {
   label: string;
@@ -10,7 +10,7 @@ interface InputProps {
   className?: string;
 }
 
-export  const Input: React.FC<InputProps> = ({
+export const Input: React.FC<InputProps> = ({
   label,
   type = "text",
   value,
@@ -30,16 +30,20 @@ export  const Input: React.FC<InputProps> = ({
         placeholder={placeholder}
         required={required}
         onFocus={() => setIsFocused(true)}
-        onBlur={(e) => setIsFocused(e.target.value !== '')}
-        className={`peer w-full border-b-2 border-gray-300 text-gray-900 placeholder-transparent bg-transparent focus:outline-none focus:ring-0 focus:border-blue-600 ${isFocused ? 'border-blue-600' : ''} `}
+        onBlur={e => setIsFocused(e.target.value !== "")}
+        className={`peer w-full border-b-2 border-gray-300 text-gray-900 placeholder-transparent bg-transparent focus:outline-none focus:ring-0 focus:border-blue-600 ${
+          isFocused ? "border-blue-600" : ""
+        } `}
       />
       <label
-        className={`absolute left-0 text-gray-500 transition-all transform ${isFocused || value ? "-translate-y-6 text-sm text-blue-600" : "translate-y-0 text-base"}`}
+        className={`absolute left-0 text-gray-500 transition-all transform ${
+          isFocused || value
+            ? "-translate-y-6 text-sm text-blue-600"
+            : "translate-y-0 text-base"
+        }`}
       >
         {label}
       </label>
     </div>
   );
 };
-
-

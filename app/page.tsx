@@ -1,8 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import React, { useState } from "react";
-import { ButtonComponent } from "./components/button";
 
 const Home = () => {
   return (
@@ -10,7 +8,6 @@ const Home = () => {
       <section className=" bg-slate-200 h-56 m-1.5  flex flex-row justify-between items-center ">
         <div className="w-screen h-44 flex-col justify-center  items-center  ">
           <h1 className="text-black text-center">hola mundo</h1>
-          <ButtonComponent />
         </div>
         <main className="w-screen h-44  flex justify-center">
           <Image
