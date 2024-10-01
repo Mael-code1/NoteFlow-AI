@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 
-interface InputProps {
+type InputProps = {
   label: string;
-  type: string;
+  type?: "password" | "email";
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder: string;
   required?: boolean;
   className?: string;
-}
+};
 
 export const Input: React.FC<InputProps> = ({
   label,

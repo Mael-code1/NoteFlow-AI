@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-
+import Button from "./components/button";
 const Home = () => {
   return (
     <div className="h-full w-screen">
@@ -17,6 +17,7 @@ const Home = () => {
             alt="imagen de referencia 1"
           />
         </main>
+        <Button type="button" text="acceder" />
       </section>
     </div>
   );
