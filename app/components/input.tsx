@@ -1,39 +1,26 @@
-import React, { useState } from "react";
+import { useState, InputHTMLAttributes } from "react";
 
-type InputProps = {
-  label: string;
-  type?: "password" | "email";
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  placeholder: string;
-  required?: boolean;
-  className?: string;
-};
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> {}
 
-export const Input: React.FC<InputProps> = ({
-  label,
-  type = "text",
-  value,
-  onChange,
-  placeholder = "",
-  required = false,
-  className = "",
-}) => {
+export const Input = (props: InputProps) => {
   const [isFocused, setIsFocused] = useState(false);
+  const { value = "", className = "", onFocus, onBlur } = props; // Desestructuramos las props necesarias
 
   return (
     <div className={`relative input-wrapper ${className}`}>
       <input
-        type={type}
-        value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-        required={required}
-        onFocus={() => setIsFocused(true)}
-        onBlur={e => setIsFocused(e.target.value !== "")}
+        {...props} // Pasamos todas las props adicionales
+        onFocus={e => {
+          setIsFocused(true);
+          onFocus && onFocus(e); // Verificamos si la función onFocus existe antes de llamarla
+        }}
+        onBlur={e => {
+          setIsFocused(e.target.value !== "");
+          onBlur && onBlur(e); // Verificamos si la función onBlur existe antes de llamarla
+        }}
         className={`peer w-full border-b-2 border-gray-300 text-gray-900 placeholder-transparent bg-transparent focus:outline-none focus:ring-0 focus:border-blue-600 ${
           isFocused ? "border-blue-600" : ""
-        } `}
+        }`}
       />
       <label
         className={`absolute left-0 text-gray-500 transition-all transform ${
@@ -42,7 +29,7 @@ export const Input: React.FC<InputProps> = ({
             : "translate-y-0 text-base"
         }`}
       >
-        {label}
+        {props.placeholder}{" "}
       </label>
     </div>
   );

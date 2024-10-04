@@ -3,14 +3,15 @@
 import React, { useState, FormEvent } from "react";
 import { Input } from "../components/input";
 import { getUser } from "../actions/form"; // Importa la Server Action
-import Button from "../components/button";
-
+import { Button } from "../components/button";
+import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 const FormLogin = () => {
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const router = useRouter();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -19,6 +20,8 @@ const FormLogin = () => {
       const user = await getUser({ email, password });
       setSuccessMessage("correo correcto");
       console.log("Usuario creado:", user);
+
+      setTimeout(() => router.push("/dasboard"), 2_000);
     } catch (error) {
       setErrorMessage("Error al crear usuario");
       console.error(error);
@@ -50,7 +53,7 @@ const FormLogin = () => {
           placeholder="Ingresa tu contraseña"
           required
         />
-        <Button type="summit" text="Enviar" />
+        <Button type="summit" text="Enviar" varible="" />
       </form>
     </div>
   );
