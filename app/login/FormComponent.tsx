@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState, FormEvent } from "react";
+import React, { useState, FormEvent, use } from "react";
 import { Input } from "../components/input";
 import { getUser } from "../actions/form"; // Importa la Server Action
 import { Button } from "../components/button";
-import { redirect } from "next/navigation";
 import { useRouter } from "next/navigation";
+import { cookies } from "next/headers";
+
 const FormLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -19,9 +20,9 @@ const FormLogin = () => {
     try {
       const user = await getUser({ email, password });
       setSuccessMessage("correo correcto");
+      document.cookie = `token=${user.token}; path=/home; max-age=3600`;
       console.log("Usuario creado:", user.user, user.token);
-
-      setTimeout(() => router.push("/home"), 2_000);
+      setTimeout(() => router.push("/home"), 3_000);
     } catch (error) {
       setErrorMessage("Error al crear usuario");
       console.error(error);

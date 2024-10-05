@@ -5,8 +5,7 @@ import { Input } from "../components/input";
 import { createUser } from "../actions/form"; // Importa la Server Action
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import FormLogin from "../login/oage";
-import Button from "../components/button";
+import { Button } from "../components/button";
 
 const FormComponent = () => {
   const [name, setName] = useState("");
@@ -17,7 +16,7 @@ const FormComponent = () => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const router = useRouter();
 
-  const handleSubmit = async (e: FormESvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
     setSuccessMessage(null);
@@ -47,7 +46,6 @@ const FormComponent = () => {
         {successMessage && <p className="text-green-500">{successMessage}</p>}
         <h1 className="text-start text-5xl text-cyan-500">login</h1>
         <Input
-          label="Nombre"
           value={name}
           type="text"
           onChange={e => setName(e.target.value)}
@@ -55,7 +53,6 @@ const FormComponent = () => {
           required
         />
         <Input
-          label="Correo electrónico"
           type="email"
           value={email}
           onChange={e => setEmail(e.target.value)}
@@ -63,7 +60,6 @@ const FormComponent = () => {
           required
         />
         <Input
-          label="Contraseña"
           type="password"
           value={password}
           onChange={e => setPassword(e.target.value)}
@@ -71,10 +67,10 @@ const FormComponent = () => {
           required
         />
         <Input
-          label="contraseña"
           type="password"
           value={password2}
           onChange={e => setPasword2(e.target.value)}
+          placeholder="Ingresa tu contraseña"
         />
         <Button type="button" text="enter" varible="primary" />
         <Link
