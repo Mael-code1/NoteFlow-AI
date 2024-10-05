@@ -19,9 +19,9 @@ const FormLogin = () => {
     try {
       const user = await getUser({ email, password });
       setSuccessMessage("correo correcto");
-      console.log("Usuario creado:", user);
+      console.log("Usuario creado:", user.user, user.token);
 
-      setTimeout(() => router.push("/dasboard"), 2_000);
+      setTimeout(() => router.push("/home"), 2_000);
     } catch (error) {
       setErrorMessage("Error al crear usuario");
       console.error(error);
@@ -38,7 +38,6 @@ const FormLogin = () => {
         {successMessage && <p className="text-green-500">{successMessage}</p>}
 
         <Input
-          label="Correo electrónico"
           type="email"
           value={email}
           onChange={e => setEmail(e.target.value)}
@@ -46,14 +45,13 @@ const FormLogin = () => {
           required
         />
         <Input
-          label="Contraseña"
           type="password"
           value={password}
           onChange={e => setPassword(e.target.value)}
           placeholder="Ingresa tu contraseña"
           required
         />
-        <Button type="summit" text="Enviar" varible="" />
+        <Button type="submit" text="Enviar" varible="primary" />
       </form>
     </div>
   );

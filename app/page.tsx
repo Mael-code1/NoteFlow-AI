@@ -1,7 +1,8 @@
 "use client";
-
 import Image from "next/image";
 import { Button } from "./components/button";
+import { useState } from "react";
+
 const Home = () => {
   return (
     <div className="h-full w-screen">
