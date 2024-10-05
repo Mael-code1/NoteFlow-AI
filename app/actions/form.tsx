@@ -2,7 +2,9 @@
 import { prisma } from "../lib/prisma";
 import bcrypt from "bcryptjs";
 import { SignJWT } from "jose";
-import { redirect } from "next/navigation";
+const secretKey = new TextEncoder().encode(
+  process.env.JWT_SECRET || "supersecretkey"
+);
 
 export async function createUser(data: {
   name: string;
@@ -24,9 +26,6 @@ export async function createUser(data: {
     throw new Error("Error al crear usuario");
   }
 }
-const secretKey = new TextEncoder().encode(
-  process.env.JWT_SECRET || "supersecretkey"
-);
 
 // Función para obtener y verificar el usuario, y generar el JWT
 export async function getUser(data: { email: string; password: string }) {

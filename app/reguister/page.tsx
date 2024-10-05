@@ -29,7 +29,7 @@ const FormComponent = () => {
     try {
       const user = await createUser({ name, email, password });
       setSuccessMessage("Usuario creado con éxito");
-      setTimeout(() => router.push("/dasbord/"), 3_000);
+      setTimeout(() => router.push("/"), 3_000);
       console.log("Usuario creado:", user);
     } catch (error) {
       setErrorMessage("Error al crear usuario");
@@ -72,7 +72,7 @@ const FormComponent = () => {
           onChange={e => setPasword2(e.target.value)}
           placeholder="Ingresa tu contraseña"
         />
-        <Button type="button" text="enter" varible="primary" />
+        <Button type="submit" text="enter" varible="primary" />
         <Link
           href="/login"
           className="text-black border-b-8 border-slate-700 border-solid b"
