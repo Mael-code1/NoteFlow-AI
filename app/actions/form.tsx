@@ -27,7 +27,6 @@ export async function createUser(data: {
   }
 }
 
-// Función para obtener y verificar el usuario, y generar el JWT
 export async function getUser(data: { email: string; password: string }) {
   try {
     const user = await prisma.user.findUnique({
@@ -43,14 +42,12 @@ export async function getUser(data: { email: string; password: string }) {
       throw new Error("Contraseña incorrecta");
     }
 
-    // Generar el JWT una vez que el usuario ha sido autenticado
     const token = await new SignJWT({ email: user.email, id: user.id })
-      .setProtectedHeader({ alg: "HS256" }) // Algoritmo de firma
-      .setIssuedAt() // Establece el tiempo de emisión
-      .setExpirationTime("1h") // Establece una expiración de 1 hora
-      .sign(secretKey); // Firma el token con la clave secreta
-
-    return { user, token }; // Devolvemos el usuario y el token generado
+      .setProtectedHeader({ alg: "HS256" })
+      .setIssuedAt()
+      .setExpirationTime("1h")
+      .sign(secretKey);
+    return { user, token };
   } catch (error) {
     console.error("Error al obtener usuario:", error);
     throw new Error("Credenciales incorrectas");
