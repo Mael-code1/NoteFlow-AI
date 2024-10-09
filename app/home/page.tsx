@@ -4,7 +4,7 @@ import React from "react";
 export default function page() {
   return (
     <div>
-      <Link href={"./editor"}>editor</Link>
+      <Link href={"/home/editor"}>editor</Link>
     </div>
   );
 }
