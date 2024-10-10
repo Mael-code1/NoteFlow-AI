@@ -7,15 +7,13 @@ const secretKey = new TextEncoder().encode(
 
 export async function middleware(req: NextRequest) {
   const token = req.cookies.get("token")?.value;
-  console.log("Token cookie:", token);
 
   if (!token) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
   try {
-    const decodedToken = await jwtVerify(token, secretKey);
-    console.log("Token decodificado:", decodedToken);
+    await jwtVerify(token, secretKey);
     return NextResponse.next();
   } catch (error) {
     console.error("Token verification error:", error);

@@ -1,9 +1,10 @@
+"use client";
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { dracula } from "react-syntax-highlighter/dist/cjs/styles/prism";
-import style from "react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark";
 import remarkGfm from "remark-gfm";
+import { Createnotas } from "../actions/notas/notas";
 
 const MarkdownEditor = () => {
   const [markdownText, setMarkdownText] = useState<string>("");
@@ -26,23 +27,44 @@ const MarkdownEditor = () => {
   };
 
   const addTitle = () => {
-    insertAtCursor("# \n");
+    insertAtCursor("# Título \n");
   };
 
   const addList = () => {
-    insertAtCursor("-\n");
+    insertAtCursor("- Elemento de lista\n");
   };
 
   const addBold = () => {
-    insertAtCursor("****");
+    insertAtCursor("**Texto en negrita**");
   };
 
   const addItalic = () => {
-    insertAtCursor("__");
+    insertAtCursor("_Texto en cursiva_");
   };
 
   const addCodeBlock = () => {
-    insertAtCursor("\n```\n\n```\n");
+    insertAtCursor("\n```\nCódigo aquí\n```\n");
+  };
+
+  const addNota = async () => {
+    const title = markdownText.split("\n")[0] || "Sin título";
+    const content = markdownText;
+    const color = "#ffffff";
+    const etiquetes = "matematicas";
+    const userId = 1;
+
+    try {
+      const createNote = await Createnotas({
+        title,
+        content,
+        color,
+        etiquetes,
+        userId,
+      });
+      console.log("Nota creada", createNote);
+    } catch (error) {
+      console.error("Error al crear la nota", error);
+    }
   };
 
   return (
@@ -77,6 +99,12 @@ const MarkdownEditor = () => {
           onClick={addCodeBlock}
         >
           Código
+        </button>
+        <button
+          className="p-2 bg-blue-500 text-white rounded-md"
+          onClick={addNota}
+        >
+          Guardar
         </button>
       </div>
       <div className="flex flex-row gap-4">

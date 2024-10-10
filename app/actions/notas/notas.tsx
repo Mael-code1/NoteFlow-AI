@@ -1,31 +1,15 @@
-import { prisma } from "../../lib/prisma";
+import { prisma } from "@/app/lib/prisma";
 
-export async function notas(data: {
+export async function Createnotas(data: {
   title: string;
-  etiquetes: string[];
+  tags: string[] | undefined; // Permitir undefined si no estás seguro
   content: string;
   color: string;
   userId: number;
 }) {
   try {
     const notas = await prisma.note.create({
-      data: {
-        title: data.title,
-        content: data.content,
-        color: data.color,
-        userId: data.userId,
-        tags: {
-          create: data.etiquetes.map(etiquita => ({
-            tag: {
-              connectOrCreate: {
-                where: { name: etiquita },
-                create: { name: etiquita },
-              },
-            },
-          })),
-        },
-      },
-      include: { tags: true },
+      data: { title: data.title, content: data.content , color:},
     });
     return notas;
   } catch (error) {
