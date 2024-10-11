@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { jwtVerify } from "jose";
+import { jwtDecrypt, jwtVerify } from "jose";
+import { use } from "react";
 
 const secretKey = new TextEncoder().encode(
   process.env.JWT_SECRET || "supersecretkey"
@@ -13,7 +14,10 @@ export async function middleware(req: NextRequest) {
   }
 
   try {
-    await jwtVerify(token, secretKey);
+    const user = await jwtVerify(token, secretKey);
+    //qui logre extraer id del user que utilizare pero todavia no planifico bien como insertal al notas esta en proceso
+    const Userid = user.payload.id;
+
     return NextResponse.next();
   } catch (error) {
     console.error("Token verification error:", error);

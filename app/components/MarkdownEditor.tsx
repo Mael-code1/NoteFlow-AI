@@ -8,9 +8,16 @@ import { Createnotas } from "../actions/notas/notas";
 
 const MarkdownEditor = () => {
   const [markdownText, setMarkdownText] = useState<string>("");
+  const [tags, setTags] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setMarkdownText(e.target.value);
+  };
+
+  const handleTagsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTags(e.target.value);
   };
 
   const insertAtCursor = (text: string) => {
@@ -50,63 +57,83 @@ const MarkdownEditor = () => {
     const title = markdownText.split("\n")[0] || "Sin título";
     const content = markdownText;
     const color = "#ffffff";
-    const etiquetes = "matematicas";
+    const etiquetes = tags
+      .split(",")
+      .map(tag => tag.trim())
+      .filter(tag => tag !== "");
     const userId = 1;
 
     try {
+      setError(null);
+      setSuccess(null);
       const createNote = await Createnotas({
         title,
         content,
         color,
-        etiquetes,
+        tags: etiquetes,
         userId,
       });
-      console.log("Nota creada", createNote);
+      console.log("Nota creada exitosamente:", createNote);
+      setSuccess("Nota creada exitosamente");
     } catch (error) {
-      console.error("Error al crear la nota", error);
+      console.error("Error al crear la nota:", error);
+      setError("Hubo un error al crear la nota. Inténtalo nuevamente.");
     }
   };
 
   return (
     <div className="flex flex-col h-auto w-full">
       <div className="w-full md:w-1/2 mb-2 space-x-2">
+        <div className="flex space-x-2 mb-4">
+          <button
+            className="p-2 bg-blue-500 text-white rounded-md"
+            onClick={addTitle}
+          >
+            H1
+          </button>
+          <button
+            className="p-2 bg-blue-500 text-white rounded-md"
+            onClick={addList}
+          >
+            Lista
+          </button>
+          <button
+            className="p-2 bg-blue-500 text-white rounded-md"
+            onClick={addBold}
+          >
+            Negrita
+          </button>
+          <button
+            className="p-2 bg-blue-500 text-white rounded-md"
+            onClick={addItalic}
+          >
+            Cursiva
+          </button>
+          <button
+            className="p-2 bg-blue-500 text-white rounded-md"
+            onClick={addCodeBlock}
+          >
+            Código
+          </button>
+        </div>
+
+        <input
+          type="text"
+          placeholder="Escribe etiquetas separadas por comas"
+          value={tags}
+          onChange={handleTagsChange}
+          className="p-2 border border-gray-300 rounded-md w-full mb-2 text-black"
+        />
         <button
-          className="p-2 bg-blue-500 text-white rounded-md"
-          onClick={addTitle}
-        >
-          H1
-        </button>
-        <button
-          className="p-2 bg-blue-500 text-white rounded-md"
-          onClick={addList}
-        >
-          Lista
-        </button>
-        <button
-          className="p-2 bg-blue-500 text-white rounded-md"
-          onClick={addBold}
-        >
-          Negrita
-        </button>
-        <button
-          className="p-2 bg-blue-500 text-white rounded-md"
-          onClick={addItalic}
-        >
-          Cursiva
-        </button>
-        <button
-          className="p-2 bg-blue-500 text-white rounded-md"
-          onClick={addCodeBlock}
-        >
-          Código
-        </button>
-        <button
-          className="p-2 bg-blue-500 text-white rounded-md"
+          className="p-2 bg-green-500 text-white rounded-md"
           onClick={addNota}
         >
           Guardar
         </button>
+        {error && <p className="text-red-500 mt-2">{error}</p>}
+        {success && <p className="text-green-500 mt-2">{success}</p>}
       </div>
+
       <div className="flex flex-row gap-4">
         <textarea
           id="markdown-editor"
@@ -117,7 +144,7 @@ const MarkdownEditor = () => {
           rows={20}
         />
 
-        <div className="w-full md:w-1/2 p-2 border  rounded-md bg-slate-800 text-white">
+        <div className="w-full md:w-1/2 p-2 border rounded-md bg-slate-800 text-white">
           <ReactMarkdown
             children={markdownText}
             remarkPlugins={[remarkGfm]}
