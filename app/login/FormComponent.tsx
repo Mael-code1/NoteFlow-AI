@@ -1,11 +1,10 @@
 "use client";
 
-import React, { useState, FormEvent, use } from "react";
+import React, { useState, FormEvent } from "react";
 import { Input } from "../components/input";
-import { getUser } from "../actions/form"; // Importa la Server Action
+import { getUser } from "../actions/form";
 import { Button } from "../components/button";
 import { useRouter } from "next/navigation";
-import { cookies } from "next/headers";
 
 const FormLogin = () => {
   const [email, setEmail] = useState("");
@@ -24,7 +23,7 @@ const FormLogin = () => {
       console.log("Usuario creado:", user.user, user.token);
       setTimeout(() => router.push("/home"), 3_000);
     } catch (error) {
-      setErrorMessage("Error al crear usuario");
+      setErrorMessage("Error al entrar al usurio");
       console.error(error);
     }
   };

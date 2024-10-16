@@ -5,7 +5,7 @@ export default function DashboardLayout({
 }) {
   return (
     <section>
-      <h1>hola</h1>
+      <nav className="h-7 w-full bg-emerald-700 "></nav>
       {children}
     </section>
   );

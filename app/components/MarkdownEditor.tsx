@@ -1,10 +1,12 @@
 "use client";
+
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { dracula } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import remarkGfm from "remark-gfm";
 import { Createnotas } from "../actions/notas/notas";
+import { UserID } from "../home/editor/page";
 
 const MarkdownEditor = () => {
   const [markdownText, setMarkdownText] = useState<string>("");
@@ -57,11 +59,21 @@ const MarkdownEditor = () => {
     const title = markdownText.split("\n")[0] || "Sin título";
     const content = markdownText;
     const color = "#ffffff";
-    const etiquetes = tags
-      .split(",")
-      .map(tag => tag.trim())
-      .filter(tag => tag !== "");
-    const userId = 1;
+    const etiquetes = Array.from(
+      new Set(
+        tags
+          .split(",")
+          .map(tag => tag.trim())
+          .filter(tag => tag !== "")
+      )
+    );
+    const userId = await UserID();
+    console.log("nota nueva", ":", title, content, color, etiquetes, userId);
+
+    if (!userId) {
+      setError("No se pudo obtener el ID del usuario.");
+      return;
+    }
 
     try {
       setError(null);
@@ -71,10 +83,12 @@ const MarkdownEditor = () => {
         content,
         color,
         tags: etiquetes,
-        userId,
+        userId: userId,
       });
       console.log("Nota creada exitosamente:", createNote);
       setSuccess("Nota creada exitosamente");
+      setMarkdownText("");
+      setTags("");
     } catch (error) {
       console.error("Error al crear la nota:", error);
       setError("Hubo un error al crear la nota. Inténtalo nuevamente.");

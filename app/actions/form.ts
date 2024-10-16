@@ -2,6 +2,7 @@
 import { prisma } from "../lib/prisma";
 import bcrypt from "bcryptjs";
 import { SignJWT } from "jose";
+
 const secretKey = new TextEncoder().encode(
   process.env.JWT_SECRET || "supersecretkey"
 );

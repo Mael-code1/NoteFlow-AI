@@ -1,4 +1,3 @@
-"use server";
 import { prisma } from "@/app/lib/prisma";
 
 export async function Createnotas(data: {
@@ -13,9 +12,9 @@ export async function Createnotas(data: {
     const tagRecords = await Promise.all(
       data.tags.map(async tagName => {
         return await prisma.tag.upsert({
-          where: { name: tagName },
-          update: {},
-          create: { name: tagName },
+          where: { name: tagName }, // Buscar por el nombre, no por el id
+          update: {}, // No actualizamos nada en este caso
+          create: { name: tagName }, // Crear la etiqueta solo con el nombre
         });
       })
     );
@@ -29,7 +28,7 @@ export async function Createnotas(data: {
         userId: data.userId,
         tags: {
           create: tagRecords.map(tag => ({
-            tag: { connect: { id: tag.id } },
+            tag: { connect: { id: tag.id } }, // Conectar con el id de las etiquetas
           })),
         },
       },
