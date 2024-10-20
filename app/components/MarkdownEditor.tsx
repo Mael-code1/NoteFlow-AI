@@ -13,6 +13,7 @@ const MarkdownEditor = () => {
   const [tags, setTags] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setMarkdownText(e.target.value);
@@ -35,40 +36,28 @@ const MarkdownEditor = () => {
     textarea.setSelectionRange(start + text.length, start + text.length);
   };
 
-  const addTitle = () => {
-    insertAtCursor("# Título \n");
-  };
-
-  const addList = () => {
-    insertAtCursor("- Elemento de lista\n");
-  };
-
-  const addBold = () => {
-    insertAtCursor("**Texto en negrita**");
-  };
-
-  const addItalic = () => {
-    insertAtCursor("_Texto en cursiva_");
-  };
-
-  const addCodeBlock = () => {
-    insertAtCursor("\n```\nCódigo aquí\n```\n");
-  };
+  const addTitle = () => insertAtCursor("# Título \n");
+  const addList = () => insertAtCursor("- Elemento de lista\n");
+  const addBold = () => insertAtCursor("**Texto en negrita**");
+  const addItalic = () => insertAtCursor("_Texto en cursiva_");
+  const addCodeBlock = () => insertAtCursor("\n```\nCódigo aquí\n```\n");
 
   const addNota = async () => {
     const title = markdownText.split("\n")[0] || "Sin título";
-    const content = markdownText;
+    const content = markdownText.trim();
     const color = "#ffffff";
-    const etiquetes = Array.from(
-      new Set(
-        tags
-          .split(",")
-          .map(tag => tag.trim())
-          .filter(tag => tag !== "")
-      )
-    );
+    const etiquetes = tags.trim();
     const userId = await UserID();
-    console.log("nota nueva", ":", title, content, color, etiquetes, userId);
+
+    if (!content) {
+      setError("El contenido de la nota no puede estar vacío.");
+      return;
+    }
+
+    if (!etiquetes) {
+      setError("Las etiquetas no pueden estar vacías.");
+      return;
+    }
 
     if (!userId) {
       setError("No se pudo obtener el ID del usuario.");
@@ -78,13 +67,16 @@ const MarkdownEditor = () => {
     try {
       setError(null);
       setSuccess(null);
+      setIsLoading(true);
+
       const createNote = await Createnotas({
         title,
         content,
         color,
         tags: etiquetes,
-        userId: userId,
+        userId,
       });
+
       console.log("Nota creada exitosamente:", createNote);
       setSuccess("Nota creada exitosamente");
       setMarkdownText("");
@@ -92,6 +84,8 @@ const MarkdownEditor = () => {
     } catch (error) {
       console.error("Error al crear la nota:", error);
       setError("Hubo un error al crear la nota. Inténtalo nuevamente.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -139,10 +133,13 @@ const MarkdownEditor = () => {
           className="p-2 border border-gray-300 rounded-md w-full mb-2 text-black"
         />
         <button
-          className="p-2 bg-green-500 text-white rounded-md"
+          className={`p-2 bg-green-500 text-white rounded-md ${
+            isLoading ? "opacity-50 cursor-not-allowed" : ""
+          }`}
           onClick={addNota}
+          disabled={isLoading}
         >
-          Guardar
+          {isLoading ? "Guardando..." : "Guardar"}
         </button>
         {error && <p className="text-red-500 mt-2">{error}</p>}
         {success && <p className="text-green-500 mt-2">{success}</p>}
