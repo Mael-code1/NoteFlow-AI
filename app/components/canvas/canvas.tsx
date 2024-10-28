@@ -11,7 +11,7 @@ interface Edge {
   to: Node;
 }
 
-const GraphCanvas: React.FC = () => {
+export const GraphCanvas: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [nodes, setNodes] = useState<Node[]>([]);
   const [edges, setEdges] = useState<Edge[]>([]);
@@ -75,7 +75,7 @@ const GraphCanvas: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className="h-screen w-full flex flex-row  justify-center items-center gap-28 m-4">
       <canvas
         ref={canvasRef}
         width={600}
@@ -93,5 +93,3 @@ const GraphCanvas: React.FC = () => {
     </div>
   );
 };
-
-export default GraphCanvas;

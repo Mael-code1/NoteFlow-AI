@@ -4,7 +4,7 @@ import MarkdownEditor from "../../components/MarkdownEditor";
 import { jwtVerify } from "jose";
 import { Navcomponet } from "../../components/nav";
 
-export async function UserID(): promise<number | undefined> {
+export async function UserID() {
   const cookies = document.cookie;
   const token = cookies
     .split("; ")
@@ -32,7 +32,6 @@ export async function UserID(): promise<number | undefined> {
 export default function Home() {
   return (
     <div className="container mx-auto p-8">
-      <Navcomponet />
       <h1 className="text-3xl font-bold mb-4">Editor de Markdown</h1>
       <MarkdownEditor />
     </div>
