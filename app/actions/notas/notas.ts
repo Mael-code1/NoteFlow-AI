@@ -1,16 +1,18 @@
 "use server";
 import { prisma } from "@/app/lib/prisma";
 
-export async function Createnotas(data: {
+interface notasProps {
   title: string;
   content: string;
   color: string;
   tags: string;
   userId: number;
-}) {
+}
+
+export async function Createnotas({ color, content, tags, title, userId }: notasProps) {
   const existingTag = await prisma.tag.findFirst({
     where: {
-      name: data.tags,
+      name: tags,
     },
   });
   let tag;
@@ -18,15 +20,15 @@ export async function Createnotas(data: {
     tag = existingTag;
   } else {
     tag = await prisma.tag.create({
-      data: { name: data.tags },
+      data: { name: tags },
     });
   }
   const nota = await prisma.note.create({
     data: {
-      title: data.title,
-      content: data.content,
-      color: data.color,
-      userId: data.userId,
+      title: title,
+      content: content,
+      color: color,
+      userId: userId,
       tags: {
         create: {
           tagId: tag.id,
@@ -35,4 +37,22 @@ export async function Createnotas(data: {
     },
   });
   return nota;
+}
+
+
+import { UserID } from "../users/users";
+
+export async function getNotas() {
+  const id = await UserID()
+  try {
+    const notas = await prisma.note.findMany({
+      where:{
+        userId:id,
+      }
+    })
+    return notas
+
+  } catch (e) {
+    console.log("error al aser la consulta");
+  }
 }

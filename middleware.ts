@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify } from "jose";
+import { cookies } from "next/headers";
 
 const secretKey = new TextEncoder().encode(
   process.env.JWT_SECRET || "supersecretkey"
 );
 
 export async function middleware(req: NextRequest) {
-  const token = req.cookies.get("token")?.value;
+  const token = cookies().get('nombre')?.value;
 
   if (!token) {
     return NextResponse.redirect(new URL("/login", req.url));
@@ -14,7 +15,6 @@ export async function middleware(req: NextRequest) {
 
   try {
     await jwtVerify(token, secretKey);
-
     return NextResponse.next();
   } catch (error) {
     console.error("Token verification error:", error);

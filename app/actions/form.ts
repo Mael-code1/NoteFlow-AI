@@ -1,7 +1,9 @@
 "use server";
+
 import { prisma } from "../lib/prisma";
 import bcrypt from "bcryptjs";
 import { SignJWT } from "jose";
+import { cookies } from "next/headers";
 
 const secretKey = new TextEncoder().encode(
   process.env.JWT_SECRET || "supersecretkey"
@@ -33,11 +35,9 @@ export async function getUser(data: { email: string; password: string }) {
     const user = await prisma.user.findUnique({
       where: { email: data.email },
     });
-
     if (!user) {
       throw new Error("Usuario no encontrado");
     }
-
     const isPasswordValid = await bcrypt.compare(data.password, user.password);
     if (!isPasswordValid) {
       throw new Error("Contraseña incorrecta");
@@ -48,6 +48,7 @@ export async function getUser(data: { email: string; password: string }) {
       .setIssuedAt()
       .setExpirationTime("1h")
       .sign(secretKey);
+      cookies().set('nombre',token)
     return { user, token };
   } catch (error) {
     console.error("Error al obtener usuario:", error);

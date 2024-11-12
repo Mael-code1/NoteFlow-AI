@@ -6,7 +6,8 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { dracula } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import remarkGfm from "remark-gfm";
 import { Createnotas } from "../actions/notas/notas";
-import { UserID } from "../home/editor/page";
+// import { UserID } from "../home/editor/page";
+import { UserID } from "../actions/users/users";
 
 const MarkdownEditor = () => {
   const [markdownText, setMarkdownText] = useState<string>("");

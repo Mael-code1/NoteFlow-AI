@@ -17,10 +17,8 @@ const FormLogin = () => {
     e.preventDefault();
 
     try {
-      const user = await getUser({ email, password });
+      await getUser({ email, password });
       setSuccessMessage("correo correcto");
-      document.cookie = `token=${user.token}; path=/home; max-age=3600`;
-      console.log("Usuario creado:", user.user, user.token);
       setTimeout(() => router.push("/home"), 3_000);
     } catch (error) {
       setErrorMessage("Error al entrar al usurio");
