@@ -1,6 +1,6 @@
 'use client'
 import { Button } from "./button";
-import { getNotas } from "../actions/notas/notas";
+import { getNotas, getNotasEdit } from "../actions/notas/notas";
 import { useEffect, useState } from "react";
 
 interface notas {
@@ -15,6 +15,9 @@ interface notas {
 }
 export default function Notestag() {
     const [notas, setnotas] = useState<notas[]>([]);
+    const NotasEdit = async (id:number,title:string,content:string) => {
+        await getNotasEdit({id,title,content})
+    }
     useEffect(() => {
         const fetchNotas = async () => {
             try {
@@ -39,8 +42,9 @@ export default function Notestag() {
                         <p className="text-xs text-gray-500 mt-2">
                             {new Date(note.createdAt).toLocaleDateString()}
                         </p>
-                        <div className="flex justify-end mt-4">
+                        <div className="flex justify-end mt-4 gap-3">
                             <Button text="Editar" />
+                            <Button text="vista" onClick={()=> NotasEdit(note.id,note.title,note.content)} />
                         </div>
                     </div>
                 ))

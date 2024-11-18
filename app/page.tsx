@@ -1,15 +1,19 @@
 "use client";
-import Image from "next/image";
-import { Button } from "./components/button";
-import { useState } from "react";
+import Features from './components/Features';
+import { HeroSection } from './components/HeroSection';
+import  {NavHome}  from './components/nav';
 
 const Home = () => {
   return (
-    <div className="h-full w-screen">
-      <section className="h-5/6  w-4/5 bg-slate-200 h-56 m-1.5  flex flex-row justify-between items-center ">
-        <div className="flex flex-row "></div>
-      </section>
-    </div>
+    <>
+    <NavHome/>
+    <main className="px-10 py-5 flex flex-1 justify-center">
+          <div className="max-w-[960px] w-full flex flex-col gap-y-60">
+            <HeroSection />
+            <Features/>
+          </div>
+        </main>
+    </>
   );
 };
 

@@ -1,5 +1,6 @@
 "use server";
 import { prisma } from "@/app/lib/prisma";
+import { UserID } from "../users/users";
 
 interface notasProps {
   title: string;
@@ -39,20 +40,37 @@ export async function Createnotas({ color, content, tags, title, userId }: notas
   return nota;
 }
 
-
-import { UserID } from "../users/users";
-
 export async function getNotas() {
   const id = await UserID()
   try {
     const notas = await prisma.note.findMany({
-      where:{
-        userId:id,
+      where: {
+        userId: id,
       }
     })
+    // console.log(notas);
     return notas
 
   } catch (e) {
     console.log("error al aser la consulta");
+  }
+}
+
+interface Notaseditarprops {
+  id: number
+  title: string
+  content: string
+}
+
+export async function getNotasEdit({ id, title, content }: Notaseditarprops) {
+  
+
+  try {
+    const data = [id, title, content]
+    if (data) {
+      console.log("datas:", data);
+    }
+  } catch (e) {
+    console.log("error al editar notas");
   }
 }
