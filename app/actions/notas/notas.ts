@@ -62,15 +62,11 @@ interface Notaseditarprops {
   content: string
 }
 
-export async function getNotasEdit({ id, title, content }: Notaseditarprops) {
-  
 
-  try {
-    const data = [id, title, content]
-    if (data) {
-      console.log("datas:", data);
-    }
-  } catch (e) {
-    console.log("error al editar notas");
-  }
+export async function GetNotasEdit({ id, title, content }: Notaseditarprops) {
+  const data = [id,title,content]
+  console.log(typeof(data));
+  return data
 }
+
+

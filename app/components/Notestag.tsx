@@ -1,6 +1,6 @@
 'use client'
 import { Button } from "./button";
-import { getNotas, getNotasEdit } from "../actions/notas/notas";
+import { getNotas, GetNotasEdit } from "../actions/notas/notas";
 import { useEffect, useState } from "react";
 
 interface notas {
@@ -16,7 +16,8 @@ interface notas {
 export default function Notestag() {
     const [notas, setnotas] = useState<notas[]>([]);
     const NotasEdit = async (id:number,title:string,content:string) => {
-        await getNotasEdit({id,title,content})
+        await GetNotasEdit({id,title,content})
+        console.log(GetNotasEdit({id,content,title}));
     }
     useEffect(() => {
         const fetchNotas = async () => {
