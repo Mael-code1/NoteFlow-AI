@@ -1,8 +1,4 @@
-import { useState } from "react";
-
 export default function GraphCanvas2() {
-  const [nodo, serNodo] = useState("");
-
   return (
     <div>
       <canvas

@@ -64,8 +64,8 @@ interface Notaseditarprops {
 
 
 export async function GetNotasEdit({ id, title, content }: Notaseditarprops) {
-  const data = [id,title,content]
-  console.log(typeof(data));
+  const data = [id, title, content]
+  console.log(typeof (data));
   return data
 }
 
