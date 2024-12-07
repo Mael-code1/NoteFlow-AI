@@ -1,59 +1,52 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { dracula } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import remarkGfm from "remark-gfm";
-import { getNoteById, updateNote } from "@/app/actions/notas/notas";
-import { UserID } from "../actions/users/users";
-import { CreatNotas } from "@/app/actions/notas/notas";
+import { Createnotas } from "@/app/actions/notas/notas";
+import { UserID } from "@/app/actions/users/users";
 
 const MarkdownEditor = () => {
-  const { id } = useParams();
   const [markdownText, setMarkdownText] = useState<string>("");
-  const [tag, setTag] = useState<string>(""); // Cambié `tags` por `tag`
-  const [noteId, setNoteId] = useState<number | null>(null);
+  const [tags, setTags] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (id) {
-      const parsedId = parseInt(id, 10);
-      if (!isNaN(parsedId)) {
-        setNoteId(parsedId);
-        fetchNoteById(parsedId);
-      }
-    } else {
-      // Si no hay ID, limpia el estado para crear una nueva nota
-      setNoteId(null);
-      setMarkdownText("");
-      setTag("");
-    }
-  }, [id]);
-
-  const fetchNoteById = async (noteId: number) => {
-    try {
-      setError(null);
-      setIsLoading(true);
-      const note = await getNoteById(noteId); // Llama a la función que obtiene la nota desde la base de datos.
-      setMarkdownText(note.content || "");
-      setTag(note.tags[0]?.name || ""); // Obtén la primera etiqueta o un string vacío
-      setSuccess("Nota cargada exitosamente.");
-    } catch (error) {
-      console.error("Error al cargar la nota:", error);
-      setError("Hubo un problema al cargar la nota.");
-    } finally {
-      setIsLoading(false);
-    }
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setMarkdownText(e.target.value);
   };
 
-  const saveNote = async () => {
+  const handleTagsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTags(e.target.value);
+  };
+
+  const insertAtCursor = (text: string) => {
+    const textarea = document.getElementById(
+      "markdown-editor"
+    ) as HTMLTextAreaElement;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const before = markdownText.substring(0, start);
+    const after = markdownText.substring(end, markdownText.length);
+    setMarkdownText(before + text + after);
+    textarea.focus();
+    textarea.setSelectionRange(start + text.length, start + text.length);
+  };
+
+  const addTitle = () => insertAtCursor("# Título \n");
+  const addList = () => insertAtCursor("- Elemento de lista\n");
+  const addBold = () => insertAtCursor("**Texto en negrita**");
+  const addItalic = () => insertAtCursor("_Texto en cursiva_");
+  const addCodeBlock = () => insertAtCursor("\n```\nCódigo aquí\n```\n");
+
+  const addNota = async () => {
     const title = markdownText.split("\n")[0] || "Sin título";
     const content = markdownText.trim();
     const color = "#ffffff";
+    const etiquetes = tags.trim();
     const userId = await UserID();
 
     if (!content) {
@@ -61,8 +54,8 @@ const MarkdownEditor = () => {
       return;
     }
 
-    if (!tag.trim()) {
-      setError("La etiqueta no puede estar vacía.");
+    if (!etiquetes) {
+      setError("Las etiquetas no pueden estar vacías.");
       return;
     }
 
@@ -76,33 +69,21 @@ const MarkdownEditor = () => {
       setSuccess(null);
       setIsLoading(true);
 
-      if (noteId) {
-        // Actualiza una nota existente
-        await updateNote({
-          id: noteId,
-          title,
-          content,
-          color,
-          tags: [tag], // Pasar la etiqueta como un array
-        });
-        setSuccess("Nota actualizada exitosamente.");
-      } else {
-        // Crea una nueva nota
-        const newNote = await CreatNotas({
-          title,
-          content,
-          color,
-          tag, // Pasar la etiqueta
-          userId,
-        });
-        console.log("Nota creada exitosamente:", newNote);
-        setSuccess("Nota creada exitosamente.");
-        setMarkdownText("");
-        setTag("");
-      }
+      const createNote = await Createnotas({
+        title,
+        content,
+        color,
+        tags: etiquetes,
+        userId,
+      });
+
+      console.log("Nota creada exitosamente:", createNote);
+      setSuccess("Nota creada exitosamente");
+      setMarkdownText("");
+      setTags("");
     } catch (error) {
-      console.error("Error al guardar la nota:", error);
-      setError("Hubo un error al guardar la nota.");
+      console.error("Error al crear la nota:", error);
+      setError("Hubo un error al crear la nota. Inténtalo nuevamente.");
     } finally {
       setIsLoading(false);
     }
@@ -114,29 +95,48 @@ const MarkdownEditor = () => {
         <div className="flex space-x-2 mb-4">
           <button
             className="p-2 bg-blue-500 text-white rounded-md"
-            onClick={() => setMarkdownText((prev) => `${prev}\n# Nuevo Título\n`)}
+            onClick={addTitle}
           >
             H1
           </button>
           <button
             className="p-2 bg-blue-500 text-white rounded-md"
-            onClick={() => setMarkdownText((prev) => `${prev}\n- Elemento 1\n`)}
+            onClick={addList}
           >
             Lista
           </button>
+          <button
+            className="p-2 bg-blue-500 text-white rounded-md"
+            onClick={addBold}
+          >
+            Negrita
+          </button>
+          <button
+            className="p-2 bg-blue-500 text-white rounded-md"
+            onClick={addItalic}
+          >
+            Cursiva
+          </button>
+          <button
+            className="p-2 bg-blue-500 text-white rounded-md"
+            onClick={addCodeBlock}
+          >
+            Código
+          </button>
         </div>
+
         <input
           type="text"
-          placeholder="Escribe una etiqueta"
-          value={tag} // Cambié `tags` por `tag`
-          onChange={(e) => setTag(e.target.value)}
+          placeholder="Escribe etiquetas separadas por comas"
+          value={tags}
+          onChange={handleTagsChange}
           className="p-2 border border-gray-300 rounded-md w-full mb-2 text-black"
         />
         <button
           className={`p-2 bg-green-500 text-white rounded-md ${
             isLoading ? "opacity-50 cursor-not-allowed" : ""
           }`}
-          onClick={saveNote}
+          onClick={addNota}
           disabled={isLoading}
         >
           {isLoading ? "Guardando..." : "Guardar"}
@@ -144,19 +144,35 @@ const MarkdownEditor = () => {
         {error && <p className="text-red-500 mt-2">{error}</p>}
         {success && <p className="text-green-500 mt-2">{success}</p>}
       </div>
+
       <div className="flex flex-row gap-4">
         <textarea
           id="markdown-editor"
           className="w-full md:w-1/2 p-2 border border-gray-300 rounded-md text-black"
           value={markdownText}
-          onChange={(e) => setMarkdownText(e.target.value)}
+          onChange={handleInputChange}
           placeholder="Escribe tu Markdown aquí..."
           rows={20}
         />
+
         <div className="w-full md:w-1/2 p-2 border rounded-md bg-slate-800 text-white">
           <ReactMarkdown
+            children={markdownText}
             remarkPlugins={[remarkGfm]}
             components={{
+              h1: ({ children }) => (
+                <h1 className="text-3xl font-bold text-blue-500">{children}</h1>
+              ),
+              h2: ({ children }) => (
+                <h2 className="text-2xl font-semibold text-blue-400">
+                  {children}
+                </h2>
+              ),
+              h3: ({ children }) => (
+                <h3 className="text-xl font-medium text-blue-300">
+                  {children}
+                </h3>
+              ),
               code({ node, inline, className, children, ...props }) {
                 const match = /language-(\w+)/.exec(className || "");
                 return !inline && match ? (
@@ -175,9 +191,7 @@ const MarkdownEditor = () => {
                 );
               },
             }}
-          >
-            {markdownText}
-          </ReactMarkdown>
+          />
         </div>
       </div>
     </div>
